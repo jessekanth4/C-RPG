@@ -123,28 +123,31 @@ const std::vector<Area> worldMap = {
     {"Shore", {4, 5}}
 };
 
-void travel(std::size_t& currentArea) {
-    const Area& area = worldMap[currentArea];
-    std::cout << "\nCurrent location: " << area.name << "\n"
-              << "Where would you like to go?\n";
+void mapMenu(std::size_t& currentArea) {
+    bool mapOpen = true;
 
-    for (std::size_t i = 0; i < area.connections.size(); ++i) {
-        const int destination = area.connections[i];
-        std::cout << i + 1 << ". " << worldMap[destination].name << "\n";
-    }
-    std::cout << "0. Cancel\n";
+    while (mapOpen) {
+        const Area& area = worldMap[currentArea];
+        std::cout << "\n=== Map ===\n"
+                  << "Current location: " << area.name << "\n"
+                  << "Where would you like to go?\n";
 
-    const int choice = getNumber("Choice: ");
-    if (choice == 0) {
-        return;
-    }
-    if (choice < 1 || choice > static_cast<int>(area.connections.size())) {
-        std::cout << "That is not a valid destination.\n";
-        return;
-    }
+        for (std::size_t i = 0; i < area.connections.size(); ++i) {
+            const int destination = area.connections[i];
+            std::cout << i + 1 << ". " << worldMap[destination].name << "\n";
+        }
+        std::cout << "0. Return to main menu\n";
 
-    currentArea = static_cast<std::size_t>(area.connections[choice - 1]);
-    std::cout << "Travelled to " << worldMap[currentArea].name << ".\n";
+        const int choice = getNumber("Choice: ");
+        if (choice == 0) {
+            mapOpen = false;
+        } else if (choice < 1 || choice > static_cast<int>(area.connections.size())) {
+            std::cout << "That is not a valid destination.\n";
+        } else {
+            currentArea = static_cast<std::size_t>(area.connections[choice - 1]);
+            std::cout << "Travelled to " << worldMap[currentArea].name << ".\n";
+        }
+    }
 }
 
 void giveWeapon(Character& player, const std::vector<Item>& weapons) {
@@ -240,6 +243,7 @@ int main() {
                   << "3. Learn a skill\n"
                   << "4. Check learned skills\n"
                   << "5. Show character info\n"
+                  << "6. Open map\n"
                   << "0. Quit\n";
 
         switch (getNumber("Choice: ")) {
@@ -259,7 +263,7 @@ int main() {
             player->displayInfo();
             break;
         case 6:
-            travel(currentArea);
+            mapMenu(currentArea);
             break;
         case 0:
             running = false;
