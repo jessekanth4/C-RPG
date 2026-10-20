@@ -11,7 +11,7 @@
 //Deep forest = 6
 //Town = 7
 //Shore = 8
-// Each area stores the map locations the player can travel to from there.
+//Each area has numbers corresponding to the areas it connects to
 const std::vector<Area> worldMap =
 {
     {"Home", {1, 2, 3}},
@@ -33,24 +33,18 @@ void mapMenu(std::size_t& currentArea)
     {
         const Area& area = worldMap[currentArea];
 
-        std::cout << "
-=== Map ===
-"
-                  << "Current location: " << area.name << "
-"
-                  << "Where would you like to go?
-";
+        std::cout << "\n=== Map ===\n"
+                  << "Current location: " << area.name << "\n"
+                  << "Where would you like to go?\n";
 
         // Display only destinations connected to the current location.
         for (std::size_t i = 0; i < area.connections.size(); ++i)
         {
             const int destination = area.connections[i];
-            std::cout << i + 1 << ". " << worldMap[destination].name << "
-";
+            std::cout << i + 1 << ". " << worldMap[destination].name << "\n";
         }
 
-        std::cout << "0. Return to main menu
-";
+        std::cout << "0. Return to main menu\n";
         const int choice = getNumber("Choice: ");
 
         // Handle leaving the map, invalid choices, or moving to a connected area.
@@ -60,14 +54,12 @@ void mapMenu(std::size_t& currentArea)
         }
         else if (choice < 1 || choice > static_cast<int>(area.connections.size()))
         {
-            std::cout << "That is not a valid destination.
-";
+            std::cout << "That is not a valid destination.\n";
         }
         else
         {
             currentArea = static_cast<std::size_t>(area.connections[choice - 1]);
-            std::cout << "Travelled to " << worldMap[currentArea].name << ".
-";
+            std::cout << "Travelled to " << worldMap[currentArea].name << ".\n";
         }
     }
 }

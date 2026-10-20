@@ -2,14 +2,14 @@
 #include "input.h"
 #include <iostream>
 
-// Add a weapon to the character's inventory.
+//Add a weapon to the character's inventory. (Debug, not used in final game)
 void Character::addItem(const Item& item)
 {
     inventory.push_back(item);
     std::cout << "Received: " << item.name << "\n";
 }
 
-// List all weapons the player has collected, including their combat stats.
+//List all weapons the player has collected, including their stats.
 void Character::displayInventory() const
 {
     std::cout << "\nInventory:\n";
@@ -29,7 +29,7 @@ void Character::displayInventory() const
     }
 }
 
-// Show the weapon at the current location if it has not already been taken.
+//Show the weapon at the current location if it has not already been taken.
 void displayWeaponAtLocation(const std::vector<WorldWeapon>& worldWeapons, std::size_t currentArea)
 {
     for (const WorldWeapon& weapon : worldWeapons)
@@ -44,7 +44,7 @@ void displayWeaponAtLocation(const std::vector<WorldWeapon>& worldWeapons, std::
     }
 }
 
-// Give the weapon to the player and mark it as taken so it cannot be collected again.
+//Give the weapon to the player and mark it as "taken" so it cannot be collected again.
 void takeWeaponAtLocation(Character& player, std::vector<WorldWeapon>& worldWeapons, std::size_t currentArea)
 {
     for (WorldWeapon& weapon : worldWeapons)
