@@ -7,7 +7,6 @@ struct Item {
     std::string name;
     int damage;
     int range;
-    int weight;
 };
 
 // Starting character types. Their differences can be designed later.
@@ -63,8 +62,7 @@ public:
             const Item& item = inventory[i];
             std::cout << i + 1 << ". " << item.name
                       << " | Damage: " << item.damage
-                      << " | Range: " << item.range
-                      << " | Weight: " << item.weight << "\n";
+                      << " | Range: " << item.range << "\n";
         }
     }
 
@@ -107,13 +105,54 @@ int getNumber(const std::string& prompt) {
     }
 }
 
+
+struct Area {
+    std::string name;
+    std::vector<int> connections;
+};
+
+const std::vector<Area> worldMap = {
+    {"Home", {1, 2, 3}},
+    {"Forest path", {0, 4}},
+    {"Grassland path", {0, 5}},
+    {"Cliffs", {0}},
+    {"Forest edge", {1, 6, 8}},
+    {"Junction", {2, 7, 8}},
+    {"Deep forest", {4}},
+    {"Town", {5}},
+    {"Shore", {4, 5}}
+};
+
+void travel(std::size_t& currentArea) {
+    const Area& area = worldMap[currentArea];
+    std::cout << "\nCurrent location: " << area.name << "\n"
+              << "Where would you like to go?\n";
+
+    for (std::size_t i = 0; i < area.connections.size(); ++i) {
+        const int destination = area.connections[i];
+        std::cout << i + 1 << ". " << worldMap[destination].name << "\n";
+    }
+    std::cout << "0. Cancel\n";
+
+    const int choice = getNumber("Choice: ");
+    if (choice == 0) {
+        return;
+    }
+    if (choice < 1 || choice > static_cast<int>(area.connections.size())) {
+        std::cout << "That is not a valid destination.\n";
+        return;
+    }
+
+    currentArea = static_cast<std::size_t>(area.connections[choice - 1]);
+    std::cout << "Travelled to " << worldMap[currentArea].name << ".\n";
+}
+
 void giveWeapon(Character& player, const std::vector<Item>& weapons) {
     std::cout << "\nChoose a weapon to receive:\n";
     for (std::size_t i = 0; i < weapons.size(); ++i) {
         std::cout << i + 1 << ". " << weapons[i].name
                   << " (Damage: " << weapons[i].damage
-                  << ", Range: " << weapons[i].range
-                  << ", Weight: " << weapons[i].weight << ")\n";
+                  << ", Range: " << weapons[i].range << ")\n";
     }
     std::cout << "0. Cancel\n";
 
@@ -186,10 +225,12 @@ int main() {
     }
 
     const std::vector<Item> weapons = {
-        {"Sword", 10, 1, 4},
-        {"Axe", 12, 1, 6},
-        {"Bow", 8, 5, 3}
+        {"Sword", 10, 1},
+        {"Axe", 12, 1},
+        {"Bow", 8, 5}
     };
+
+    std::size_t currentArea = 0; // Start at Home.
 
     bool running = true;
     while (running) {
@@ -216,6 +257,9 @@ int main() {
             break;
         case 5:
             player->displayInfo();
+            break;
+        case 6:
+            travel(currentArea);
             break;
         case 0:
             running = false;
