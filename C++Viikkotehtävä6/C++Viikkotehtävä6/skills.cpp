@@ -2,6 +2,8 @@
 #include "input.h"
 #include <iostream>
 
+//Skills go unused.
+
 void Character::learnSkill(const std::string& skill)
 {
     for (const std::string& knownSkill : learnedSkills)
