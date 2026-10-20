@@ -2,12 +2,14 @@
 #include "input.h"
 #include <iostream>
 
+// Add a weapon to the character's inventory.
 void Character::addItem(const Item& item)
 {
     inventory.push_back(item);
     std::cout << "Received: " << item.name << "\n";
 }
 
+// List all weapons the player has collected, including their combat stats.
 void Character::displayInventory() const
 {
     std::cout << "\nInventory:\n";
@@ -27,30 +29,33 @@ void Character::displayInventory() const
     }
 }
 
-void giveWeapon(Character& player, const std::vector<Item>& weapons)
+// Show the weapon at the current location if it has not already been taken.
+void displayWeaponAtLocation(const std::vector<WorldWeapon>& worldWeapons, std::size_t currentArea)
 {
-    std::cout << "\nChoose a weapon to receive:\n";
-
-    for (std::size_t i = 0; i < weapons.size(); ++i)
+    for (const WorldWeapon& weapon : worldWeapons)
     {
-        std::cout << i + 1 << ". " << weapons[i].name
-                  << " (Damage: " << weapons[i].damage
-                  << ", Range: " << weapons[i].range << ")\n";
+        if (weapon.area == currentArea && weapon.available)
+        {
+            std::cout << "\nWeapon here: " << weapon.item.name
+                      << " (Damage: " << weapon.item.damage
+                      << ", Range: " << weapon.item.range << ")\n";
+            return;
+        }
+    }
+}
+
+// Give the weapon to the player and mark it as taken so it cannot be collected again.
+void takeWeaponAtLocation(Character& player, std::vector<WorldWeapon>& worldWeapons, std::size_t currentArea)
+{
+    for (WorldWeapon& weapon : worldWeapons)
+    {
+        if (weapon.area == currentArea && weapon.available)
+        {
+            player.addItem(weapon.item);
+            weapon.available = false;
+            return;
+        }
     }
 
-    std::cout << "0. Cancel\n";
-    const int choice = getNumber("Choice: ");
-
-    if (choice == 0)
-    {
-        return;
-    }
-
-    if (choice < 1 || choice > static_cast<int>(weapons.size()))
-    {
-        std::cout << "That is not a valid weapon number.\n";
-        return;
-    }
-
-    player.addItem(weapons[choice - 1]);
+    std::cout << "There is no weapon here to take.\n";
 }
