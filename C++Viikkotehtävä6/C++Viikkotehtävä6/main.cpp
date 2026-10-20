@@ -76,8 +76,18 @@ int main()
         {4, {"Bow", 8, 5}, true}        //Forest edge
     };
 
+    // Each enemy guards one location until defeated.
+    std::vector<Enemy> enemies =
+    {
+        {"Rogue", 4, 1, 36, 36, false},
+        {"Tree monster", 6, 2, 55, 55, false},
+        {"Thief", 7, 2, 45, 45, false},
+        {"Pirate", 8, 3, 70, 70, false}
+    };
+
     //The player starts at Home (area 0). The main menu stays open until they quit.
     std::size_t currentArea = 0;
+    int playerHealth = 30;
     bool running = true;
 
     while (running)
@@ -115,7 +125,7 @@ int main()
             player->displayInfo();
             break;
         case 6:
-            mapMenu(currentArea);
+            mapMenu(currentArea, *player, enemies, playerHealth);
             break;
         case 0:
             running = false;
