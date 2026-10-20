@@ -125,26 +125,26 @@ const std::vector<Area> worldMap = {
 
 void travel(std::size_t& currentArea) {
     const Area& area = worldMap[currentArea];
-    std::cout << "\\nCurrent location: " << area.name << "\\n"
-              << "Where would you like to go?\\n";
+    std::cout << "\nCurrent location: " << area.name << "\n"
+              << "Where would you like to go?\n";
 
     for (std::size_t i = 0; i < area.connections.size(); ++i) {
         const int destination = area.connections[i];
-        std::cout << i + 1 << ". " << worldMap[destination].name << "\\n";
+        std::cout << i + 1 << ". " << worldMap[destination].name << "\n";
     }
-    std::cout << "0. Cancel\\n";
+    std::cout << "0. Cancel\n";
 
     const int choice = getNumber("Choice: ");
     if (choice == 0) {
         return;
     }
     if (choice < 1 || choice > static_cast<int>(area.connections.size())) {
-        std::cout << "That is not a valid destination.\\n";
+        std::cout << "That is not a valid destination.\n";
         return;
     }
 
     currentArea = static_cast<std::size_t>(area.connections[choice - 1]);
-    std::cout << "Travelled to " << worldMap[currentArea].name << ".\\n";
+    std::cout << "Travelled to " << worldMap[currentArea].name << ".\n";
 }
 
 void giveWeapon(Character& player, const std::vector<Item>& weapons) {
