@@ -11,7 +11,7 @@
 //Deep forest = 6
 //Town = 7
 //Shore = 8
-const std::vector<Area> worldMap =
+// Each area stores the map locations the player can travel to from there.\nconst std::vector<Area> worldMap =
 {
     {"Home", {1, 2, 3}},
     {"Forest path", {0, 4}},
@@ -36,7 +36,7 @@ void mapMenu(std::size_t& currentArea)
                   << "Current location: " << area.name << "\n"
                   << "Where would you like to go?\n";
 
-        for (std::size_t i = 0; i < area.connections.size(); ++i)
+        // Display only destinations connected to the current location.\n        for (std::size_t i = 0; i < area.connections.size(); ++i)
         {
             const int destination = area.connections[i];
             std::cout << i + 1 << ". " << worldMap[destination].name << "\n";
@@ -45,7 +45,7 @@ void mapMenu(std::size_t& currentArea)
         std::cout << "0. Return to main menu\n";
         const int choice = getNumber("Choice: ");
 
-        if (choice == 0)
+        // Handle leaving the map, invalid choices, or moving to a connected area.\n        if (choice == 0)
         {
             mapOpen = false;
         }
