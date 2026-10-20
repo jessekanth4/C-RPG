@@ -1,20 +1,18 @@
 #include "map.h"
-#include "combat.h"
-#include "character.h"
 #include "input.h"
 #include <iostream>
+#include <random>
 
-// Home = 0
-// Forest path = 1
-// Grassland path = 2
-// Cliffs = 3
-// Forest edge = 4
-// Junction = 5
-// Deep forest = 6
-// Town = 7
-// Shore = 8
-
-// Each area lists the other areas that can be reached from it.
+//Home = 0
+//Forest path = 1
+//Grassland path = 2
+//Cliffs = 3
+//Forest edge = 4
+//Junction = 5
+//Deep forest = 6
+//Town = 7
+//Shore = 8
+//Each area has numbers corresponding to the areas it connects to
 const std::vector<Area> worldMap =
 {
     {"Home", {1, 2, 3}},
@@ -40,7 +38,7 @@ void mapMenu(std::size_t& currentArea, Character& player, std::vector<Enemy>& en
                   << "Current location: " << area.name << "\n"
                   << "Where would you like to go?\n";
 
-        // Show only destinations connected to the current location.
+        // Display only destinations connected to the current location.
         for (std::size_t i = 0; i < area.connections.size(); ++i)
         {
             const int destination = area.connections[i];
@@ -50,6 +48,7 @@ void mapMenu(std::size_t& currentArea, Character& player, std::vector<Enemy>& en
         std::cout << "0. Return to main menu\n";
         const int choice = getNumber("Choice: ");
 
+        // Handle leaving the map, invalid choices, or moving to a connected area.
         if (choice == 0)
         {
             mapOpen = false;
@@ -63,7 +62,6 @@ void mapMenu(std::size_t& currentArea, Character& player, std::vector<Enemy>& en
             const std::size_t destination = static_cast<std::size_t>(area.connections[choice - 1]);
             Enemy* guardingEnemy = nullptr;
 
-            // Check whether an undefeated enemy guards the destination.
             for (Enemy& enemy : enemies)
             {
                 if (enemy.area == destination && !enemy.defeated)
@@ -73,27 +71,79 @@ void mapMenu(std::size_t& currentArea, Character& player, std::vector<Enemy>& en
                 }
             }
 
-            // The player must defeat the enemy before entering its area.
-            if (guardingEnemy != nullptr)
-            {
-                const CombatResult result = fightEnemy(player, *guardingEnemy, playerHealth);
-
-                if (result == CombatResult::Victory)
-                {
-                    currentArea = destination;
-                    std::cout << "You can now enter " << worldMap[currentArea].name << ".\n";
-                }
-                else if (result == CombatResult::PlayerDied)
-                {
-                    currentArea = 0;
-                    std::cout << "You are back at Home.\n";
-                }
-                // If the player escaped, the current location does not change.
-            }
-            else
+            if (guardingEnemy == nullptr)
             {
                 currentArea = destination;
                 std::cout << "Travelled to " << worldMap[currentArea].name << ".\n";
+                continue;
+            }
+
+            std::cout << "\nA " << guardingEnemy->name << " blocks the way!\n";
+            bool combatFinished = false;
+
+            while (!combatFinished)
+            {
+                std::cout << "\nYour health: " << playerHealth << "/30\n"
+                          << guardingEnemy->name << " health: " << guardingEnemy->health
+                          << "/" << guardingEnemy->maxHealth << "\n"
+                          << "1. Fight\n"
+                          << "2. Run\n";
+
+                const int combatChoice = getNumber("Choice: ");
+
+                if (combatChoice == 2)
+                {
+                    playerHealth = 30;
+                    guardingEnemy->health = guardingEnemy->maxHealth;
+                    std::cout << "You escaped. Both you and the enemy recovered.\n";
+                    combatFinished = true;
+                }
+                else if (combatChoice != 1)
+                {
+                    std::cout << "Choose 1 to fight or 2 to run.\n";
+                }
+                else
+                {
+                    // Each side rolls 3-9; the roll is multiplied by weapon damage or base attack.
+                    static std::random_device seed;
+                    static std::mt19937 generator(seed());
+                    static std::uniform_int_distribution<int> attackRoll(3, 9);
+
+                    const int playerRoll = attackRoll(generator);
+                    const int playerDamage = playerRoll * player.getStrongestWeaponDamage();
+                    guardingEnemy->health -= playerDamage;
+
+                    std::cout << "You rolled " << playerRoll << " and dealt "
+                              << playerDamage << " damage.\n";
+
+                    if (guardingEnemy->health <= 0)
+                    {
+                        guardingEnemy->health = 0;
+                        guardingEnemy->defeated = true;
+                        currentArea = destination;
+                        std::cout << "You defeated the " << guardingEnemy->name
+                                  << "! You can now enter " << worldMap[currentArea].name << ".\n";
+                        combatFinished = true;
+                    }
+                    else
+                    {
+                        const int enemyRoll = attackRoll(generator);
+                        const int enemyDamage = enemyRoll * guardingEnemy->baseAttack;
+                        playerHealth -= enemyDamage;
+
+                        std::cout << "The " << guardingEnemy->name << " rolled " << enemyRoll
+                                  << " and dealt " << enemyDamage << " damage.\n";
+
+                        if (playerHealth <= 0)
+                        {
+                            playerHealth = 30;
+                            guardingEnemy->health = guardingEnemy->maxHealth;
+                            currentArea = 0;
+                            std::cout << "You were defeated and returned Home. Both you and the enemy recovered.\n";
+                            combatFinished = true;
+                        }
+                    }
+                }
             }
         }
     }
