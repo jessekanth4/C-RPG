@@ -59,3 +59,20 @@ void takeWeaponAtLocation(Character& player, std::vector<WorldWeapon>& worldWeap
 
     std::cout << "There is no weapon here to take.\n";
 }
+
+ 
+// Return the damage value of the strongest weapon in the inventory.
+int Character::getStrongestWeaponDamage() const
+{
+    int strongestDamage = 1;
+
+    for (const Item& item : inventory)
+    {
+        if (item.damage > strongestDamage)
+        {
+            strongestDamage = item.damage;
+        }
+    }
+
+    return strongestDamage;
+}
