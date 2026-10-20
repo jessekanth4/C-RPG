@@ -7,7 +7,24 @@ struct Item {
     std::string name;
     int damage;
     int range;
-    int weight;
+};
+
+struct Area {
+    std::string name;
+    std::vector<int> connections;
+};
+
+// Each area is one tile. Connections determine where the player can move.
+const std::vector<Area> worldMap = {
+    {"Home", {1, 4, 8}},
+    {"Forest path", {0, 2}},
+    {"Forest edge", {1, 3, 7}},
+    {"Deep forest", {2}},
+    {"Grassland path", {0, 5}},
+    {"Junction", {4, 6, 7}},
+    {"Town", {5}},
+    {"Shore", {5, 2}},
+    {"Cliffs", {0}}
 };
 
 // Starting character types. Their differences can be designed later.
@@ -63,8 +80,7 @@ public:
             const Item& item = inventory[i];
             std::cout << i + 1 << ". " << item.name
                       << " | Damage: " << item.damage
-                      << " | Range: " << item.range
-                      << " | Weight: " << item.weight << "\n";
+                      << " | Range: " << item.range << "\n";
         }
     }
 
@@ -112,8 +128,7 @@ void giveWeapon(Character& player, const std::vector<Item>& weapons) {
     for (std::size_t i = 0; i < weapons.size(); ++i) {
         std::cout << i + 1 << ". " << weapons[i].name
                   << " (Damage: " << weapons[i].damage
-                  << ", Range: " << weapons[i].range
-                  << ", Weight: " << weapons[i].weight << ")\n";
+                  << ", Range: " << weapons[i].range << ")\n";
     }
     std::cout << "0. Cancel\n";
 
@@ -151,6 +166,30 @@ void learnSkill(Character& player) {
     }
 }
 
+void movePlayer(int& currentArea) {
+    const Area& area = worldMap[currentArea];
+    std::cout << "\nCurrent location: " << area.name << "\n"
+              << "Where do you want to go?\n";
+
+    for (std::size_t i = 0; i < area.connections.size(); ++i) {
+        const int destination = area.connections[i];
+        std::cout << i + 1 << ". " << worldMap[destination].name << "\n";
+    }
+    std::cout << "0. Cancel\n";
+
+    const int choice = getNumber("Choice: ");
+    if (choice == 0) {
+        return;
+    }
+    if (choice < 1 || choice > static_cast<int>(area.connections.size())) {
+        std::cout << "That is not a valid destination.\n";
+        return;
+    }
+
+    currentArea = area.connections[choice - 1];
+    std::cout << "You travel to " << worldMap[currentArea].name << ".\n";
+}
+
 int main() {
     std::string playerName;
     std::cout << "Enter your character's name: ";
@@ -186,35 +225,41 @@ int main() {
     }
 
     const std::vector<Item> weapons = {
-        {"Sword", 10, 1, 4},
-        {"Axe", 12, 1, 6},
-        {"Bow", 8, 5, 3}
+        {"Sword", 10, 1},
+        {"Axe", 12, 1},
+        {"Bow", 8, 5}
     };
 
+    int currentArea = 0; // The player starts at Home.
     bool running = true;
     while (running) {
         std::cout << "\n=== Main Menu ===\n"
-                  << "1. Receive a weapon\n"
-                  << "2. Check inventory\n"
-                  << "3. Learn a skill\n"
-                  << "4. Check learned skills\n"
-                  << "5. Show character info\n"
+                  << "Location: " << worldMap[currentArea].name << "\n"
+                  << "1. Move to another area\n"
+                  << "2. Receive a weapon\n"
+                  << "3. Check inventory\n"
+                  << "4. Learn a skill\n"
+                  << "5. Check learned skills\n"
+                  << "6. Show character info\n"
                   << "0. Quit\n";
 
         switch (getNumber("Choice: ")) {
         case 1:
-            giveWeapon(*player, weapons);
+            movePlayer(currentArea);
             break;
         case 2:
-            player->displayInventory();
+            giveWeapon(*player, weapons);
             break;
         case 3:
-            learnSkill(*player);
+            player->displayInventory();
             break;
         case 4:
-            player->displayLearnedSkills();
+            learnSkill(*player);
             break;
         case 5:
+            player->displayLearnedSkills();
+            break;
+        case 6:
             player->displayInfo();
             break;
         case 0:
