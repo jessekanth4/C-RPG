@@ -1,12 +1,13 @@
 #include "skills.h"
-
 #include "input.h"
-
 #include <iostream>
 
-void Character::learnSkill(const std::string& skill) {
-    for (const std::string& knownSkill : learnedSkills) {
-        if (knownSkill == skill) {
+void Character::learnSkill(const std::string& skill)
+{
+    for (const std::string& knownSkill : learnedSkills)
+    {
+        if (knownSkill == skill)
+        {
             std::cout << "You already know " << skill << ".\n";
             return;
         }
@@ -16,20 +17,24 @@ void Character::learnSkill(const std::string& skill) {
     std::cout << "Learned skill: " << skill << "!\n";
 }
 
-void Character::displayLearnedSkills() const {
+void Character::displayLearnedSkills() const
+{
     std::cout << "\nLearned skills:\n";
 
-    if (learnedSkills.empty()) {
+    if (learnedSkills.empty())
+    {
         std::cout << "No learnable skills yet.\n";
         return;
     }
 
-    for (const std::string& skill : learnedSkills) {
+    for (const std::string& skill : learnedSkills)
+    {
         std::cout << "- " << skill << "\n";
     }
 }
 
-void learnSkill(Character& player) {
+void learnSkill(Character& player)
+{
     std::cout << "\nChoose a skill to learn:\n"
               << "1. Swimming\n"
               << "2. Climbing\n"
@@ -37,7 +42,8 @@ void learnSkill(Character& player) {
 
     const int choice = getNumber("Choice: ");
 
-    switch (choice) {
+    switch (choice)
+    {
     case 1:
         player.learnSkill("Swimming");
         break;

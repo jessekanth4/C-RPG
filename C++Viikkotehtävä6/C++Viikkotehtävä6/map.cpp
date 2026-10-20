@@ -1,10 +1,18 @@
 #include "map.h"
-
 #include "input.h"
-
 #include <iostream>
 
-const std::vector<Area> worldMap = {
+//Home = 0
+//Forest path = 1
+//Grassland path = 2
+//Cliffs = 3
+//Forest edge = 4
+//Junction = 5
+//Deep forest = 6
+//Town = 7
+//Shore = 8
+const std::vector<Area> worldMap =
+{
     {"Home", {1, 2, 3}},
     {"Forest path", {0, 4}},
     {"Grassland path", {0, 5}},
@@ -16,17 +24,20 @@ const std::vector<Area> worldMap = {
     {"Shore", {4, 5}}
 };
 
-void mapMenu(std::size_t& currentArea) {
+void mapMenu(std::size_t& currentArea)
+{
     bool mapOpen = true;
 
-    while (mapOpen) {
+    while (mapOpen)
+    {
         const Area& area = worldMap[currentArea];
 
         std::cout << "\n=== Map ===\n"
                   << "Current location: " << area.name << "\n"
                   << "Where would you like to go?\n";
 
-        for (std::size_t i = 0; i < area.connections.size(); ++i) {
+        for (std::size_t i = 0; i < area.connections.size(); ++i)
+        {
             const int destination = area.connections[i];
             std::cout << i + 1 << ". " << worldMap[destination].name << "\n";
         }
@@ -34,11 +45,16 @@ void mapMenu(std::size_t& currentArea) {
         std::cout << "0. Return to main menu\n";
         const int choice = getNumber("Choice: ");
 
-        if (choice == 0) {
+        if (choice == 0)
+        {
             mapOpen = false;
-        } else if (choice < 1 || choice > static_cast<int>(area.connections.size())) {
+        }
+        else if (choice < 1 || choice > static_cast<int>(area.connections.size()))
+        {
             std::cout << "That is not a valid destination.\n";
-        } else {
+        }
+        else
+        {
             currentArea = static_cast<std::size_t>(area.connections[choice - 1]);
             std::cout << "Travelled to " << worldMap[currentArea].name << ".\n";
         }

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstdlib>
 
 #include "character.h"
 #include "input.h"
@@ -8,12 +9,19 @@
 #include "map.h"
 #include "skills.h"
 
-int main() {
+void clearScreen()
+{
+    std::system("cls");
+}
+
+int main()
+{
     std::string playerName;
     std::cout << "Enter your character's name: ";
     std::getline(std::cin, playerName);
 
-    if (playerName.empty()) {
+    if (playerName.empty())
+    {
         playerName = "Player";
     }
 
@@ -24,12 +32,15 @@ int main() {
 
     int classChoice;
 
-    do {
+    do
+    {
         classChoice = getNumber("Choice: ");
 
-        if (classChoice < 1 || classChoice > 3) {
+        if (classChoice < 1 || classChoice > 3)
+        {
             std::cout << "Please choose 1, 2, or 3.\n";
         }
+
     } while (classChoice < 1 || classChoice > 3);
 
     // The class types are placeholders; their gameplay differences come later.
@@ -38,15 +49,18 @@ int main() {
     ClassCombo classCombo(playerName);
     Character* player = nullptr;
 
-    if (classChoice == 1) {
+    if (classChoice == 1)
+    {
         player = &class1;
-    } else if (classChoice == 2) {
+    } else if (classChoice == 2)
+    {
         player = &class2;
     } else {
         player = &classCombo;
     }
 
-    const std::vector<Item> weapons = {
+    const std::vector<Item> weapons =
+    {
         {"Sword", 10, 1},
         {"Axe", 12, 1},
         {"Bow", 8, 5}
@@ -55,7 +69,8 @@ int main() {
     std::size_t currentArea = 0; // Start at Home.
     bool running = true;
 
-    while (running) {
+    while (running)
+    {
         std::cout << "\n=== Main Menu ===\n"
                   << "1. Receive a weapon\n"
                   << "2. Check inventory\n"
@@ -64,6 +79,7 @@ int main() {
                   << "5. Show character info\n"
                   << "6. Open map\n"
                   << "0. Quit\n";
+
 
         switch (getNumber("Choice: ")) {
         case 1:
