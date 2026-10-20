@@ -78,10 +78,10 @@ int main()
     // Each enemy guards one location. Damage is the multiplier for its attack roll.
     std::vector<Enemy> enemies =
     {
-        {"Rogue", 4, 1, 36, 36, false},          // Forest edge
-        {"Tree monster", 6, 2, 55, 55, false},  // Deep forest
-        {"Thief", 7, 2, 45, 45, false},         // Town
-        {"Pirate", 8, 3, 70, 70, false}         // Shore
+        {"Rogue", 4, 1, 36, 36, false},         // Forest edge
+        {"Tree monster", 6, 2, 55, 55, false}, // Deep forest
+        {"Thief", 7, 2, 45, 45, false},        // Town
+        {"Pirate", 8, 3, 70, 70, false}        // Shore
     };
 
     // The player starts at Home with full health.
