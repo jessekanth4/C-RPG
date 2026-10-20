@@ -60,7 +60,6 @@ void takeWeaponAtLocation(Character& player, std::vector<WorldWeapon>& worldWeap
     std::cout << "There is no weapon here to take.\n";
 }
 
- 
 // Return the damage value of the strongest weapon in the inventory.
 int Character::getStrongestWeaponDamage() const
 {
