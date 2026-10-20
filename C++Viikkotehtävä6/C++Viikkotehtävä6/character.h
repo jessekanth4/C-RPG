@@ -25,6 +25,7 @@ public:
     // Inventory functions are implemented in inventory.cpp.
     void addItem(const Item& item);
     void displayInventory() const;
+    int getStrongestWeaponDamage() const;
 
 private:
     std::string name;
