@@ -1,13 +1,10 @@
 #pragma once
 
-#include <string>
+#include <cstddef>
 #include <vector>
 
-struct Area {
-    std::string name;
-    std::vector<int> connections;
-};
+class Character;
+struct Enemy;
 
-extern const std::vector<Area> worldMap;
-
-void mapMenu(std::size_t& currentArea);
+// The map handles travel and checks whether an enemy guards the destination.
+void mapMenu(std::size_t& currentArea, Character& player, std::vector<Enemy>& enemies, int& playerHealth);
