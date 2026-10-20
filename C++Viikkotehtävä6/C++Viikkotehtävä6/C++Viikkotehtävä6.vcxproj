@@ -124,6 +124,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="C++Viikkotehtävä6.cpp" />
+    <ClCompile Include="character.cpp" />
+    <ClCompile Include="input.cpp" />
+    <ClCompile Include="inventory.cpp" />
+    <ClCompile Include="map.cpp" />
+    <ClCompile Include="skills.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="character.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="inventory.h" />
+    <ClInclude Include="map.h" />
+    <ClInclude Include="skills.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
