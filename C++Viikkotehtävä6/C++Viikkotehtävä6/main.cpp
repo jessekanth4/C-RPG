@@ -4,13 +4,12 @@
 #include <cstdlib>
 
 #include "character.h"
-#include "combat.h"
 #include "input.h"
 #include "inventory.h"
 #include "map.h"
 #include "skills.h"
 
-// Clears the console so each menu is easier to read.
+//Clears the console so each menu is easier to read.
 void clearScreen()
 {
     std::system("cls");
@@ -18,7 +17,7 @@ void clearScreen()
 
 int main()
 {
-    // Ask for the character's name. Use a default if the player leaves it blank.
+    //Ask for the character's name. Use a default if the player leaves it blank.
     std::string playerName;
     std::cout << "Enter your character's name: ";
     std::getline(std::cin, playerName);
@@ -28,7 +27,7 @@ int main()
         playerName = "Player";
     }
 
-    // Let the player choose one of the three currently available character classes.
+    //Let the player choose one of the three currently available character classes.
     std::cout << "\nChoose a starting class:\n"
               << "1. Class1\n"
               << "2. Class2\n"
@@ -47,7 +46,7 @@ int main()
 
     } while (classChoice < 1 || classChoice > 3);
 
-    // Create the selected character. The class types are placeholders for now.
+    //Create the selected character. The class types are placeholders for now.
     Class1 class1(playerName);
     Class2 class2(playerName);
     ClassCombo classCombo(playerName);
@@ -66,27 +65,29 @@ int main()
         player = &classCombo;
     }
 
-    // Each weapon belongs to one map location and can only be taken once.
+    //List of weapons
+    //Each weapon belongs to one map location and can only be taken once.
+    //The location numbers match the index comments in map.cpp.
     std::vector<WorldWeapon> worldWeapons =
     {
-        {3, {"Rock", 2, 3}, true},       // Cliffs
-        {7, {"Sword", 10, 1}, true},     // Town
-        {6, {"Axe", 12, 1}, true},       // Deep forest
-        {4, {"Bow", 8, 5}, true}         // Forest edge
+        {3, {"Rock", 2, 3}, true},      //Cliffs
+        {7, {"Sword", 10, 1}, true},    // Town
+        {6, {"Axe", 12, 1}, true},      //Deep forest
+        {4, {"Bow", 8, 5}, true}        //Forest edge
     };
 
-    // Each enemy guards one location. Damage is the multiplier for its attack roll.
+    // Each enemy guards one location until defeated.
     std::vector<Enemy> enemies =
     {
-        {"Rogue", 4, 1, 36, 36, false},         // Forest edge
-        {"Tree monster", 6, 2, 55, 55, false}, // Deep forest
-        {"Thief", 7, 2, 45, 45, false},        // Town
-        {"Pirate", 8, 3, 70, 70, false}        // Shore
+        {"Rogue", 4, 1, 36, 36, false},
+        {"Tree monster", 6, 2, 55, 55, false},
+        {"Thief", 7, 2, 45, 45, false},
+        {"Pirate", 8, 3, 70, 70, false}
     };
 
-    // The player starts at Home with full health.
+    //The player starts at Home (area 0). The main menu stays open until they quit.
     std::size_t currentArea = 0;
-    int playerHealth = playerMaxHealth;
+    int playerHealth = 30;
     bool running = true;
 
     while (running)
@@ -100,10 +101,12 @@ int main()
                   << "6. Open map\n"
                   << "0. Quit\n";
 
-        // Show the weapon at the current location, if one is still available.
+
+        //Show the weapon at the current location, if one is still available.
         displayWeaponAtLocation(worldWeapons, currentArea);
 
-        // Run the menu option selected by the player.
+
+        //Run the menu option selected by the player.
         switch (getNumber("Choice: "))
         {
         case 1:
